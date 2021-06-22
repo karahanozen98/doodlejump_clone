@@ -1,9 +1,10 @@
 import GameObject from "./GameObject.js";
 import listenKeyboardEvents, { upPressed, leftPressed, rightPressed, } from "./KeyboardEventHandler.js";
-import { WINDOW_WIDTH, WINDOW_HEIGHT, GRAVITY } from "./app.js";
+import { WINDOW_WIDTH, WINDOW_HEIGHT, GRAVITY, game } from "./app.js";
 export default class Player extends GameObject {
     constructor(width, height, posX, posY, color, gameWindow) {
         super(width, height, posX, posY, color, true, gameWindow);
+        this.getIsOnTheGround = () => this.isOntheGround;
         this.setIsOnTheGround = (value) => (this.isOntheGround = value);
         this.speed = 5;
     }
@@ -34,9 +35,8 @@ export default class Player extends GameObject {
             this.setPosX(0 - this.getWidth());
         else if (this.getPosX() < -this.getWidth())
             this.setPosX(WINDOW_WIDTH);
-        if (this.getPosY() >= WINDOW_HEIGHT - this.getHeight()) {
-            this.setPosY(WINDOW_HEIGHT - this.getHeight());
-            this.setIsOnTheGround(true);
+        if (this.getPosY() >= WINDOW_HEIGHT) {
+            game.stop();
         }
     }
     draw() {

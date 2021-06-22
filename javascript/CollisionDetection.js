@@ -11,9 +11,9 @@ export function collisionDetection(objects) {
     objs.forEach((obj) => {
         if (obj.getCollision()) {
             const [obj_x_min, obj_x_max] = obj.getPos().x;
-            const [obj_y_min, obj_y_max] = obj.getPos().y;
+            const [obj_y_min] = obj.getPos().y;
             const [player_x_min, player_x_max] = player.getPos().x;
-            const [player_y_min, player_y_max] = player.getPos().y;
+            const [, player_y_max] = player.getPos().y;
             if (((player_x_min <= obj_x_min && player_x_max >= obj_x_min) ||
                 (player_x_min <= obj_x_max && player_x_max >= obj_x_max) ||
                 (player_x_min >= obj_x_min && player_x_max <= obj_x_max)) &&

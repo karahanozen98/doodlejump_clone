@@ -5,7 +5,7 @@ import listenKeyboardEvents, {
   leftPressed,
   rightPressed,
 } from "./KeyboardEventHandler.js";
-import { WINDOW_WIDTH, WINDOW_HEIGHT, GRAVITY } from "./app.js";
+import { WINDOW_WIDTH, WINDOW_HEIGHT, GRAVITY, game } from "./app.js";
 
 export default class Player extends GameObject {
   private speed: number;
@@ -22,7 +22,7 @@ export default class Player extends GameObject {
     super(width, height, posX, posY, color, true, gameWindow);
     this.speed = 5;
   }
-
+  public getIsOnTheGround = (): boolean => this.isOntheGround;
   public setIsOnTheGround = (value: boolean) => (this.isOntheGround = value);
 
   private enableKeyControls() {
@@ -51,9 +51,8 @@ export default class Player extends GameObject {
     // add collisions
     if (this.getPosX() > WINDOW_WIDTH) this.setPosX(0 - this.getWidth());
     else if (this.getPosX() < -this.getWidth()) this.setPosX(WINDOW_WIDTH);
-    if (this.getPosY() >= WINDOW_HEIGHT - this.getHeight()) {
-      this.setPosY(WINDOW_HEIGHT - this.getHeight());
-      this.setIsOnTheGround(true);
+    if (this.getPosY() >= WINDOW_HEIGHT) {
+      game.stop();
     }
   }
 

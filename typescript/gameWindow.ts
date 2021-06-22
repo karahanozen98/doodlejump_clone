@@ -3,7 +3,7 @@ export const gameWindow = {
   canvas: document.createElement("canvas"),
   context: undefined,
 
-  draw: function (width = 600, height = 600) {
+  draw: function (width = 350, height = 600) {
     this.canvas.width = width;
     this.canvas.height = height;
     this.canvas.style.background = "#222";
