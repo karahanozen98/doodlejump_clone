@@ -30,7 +30,7 @@ function keyUpHandler(event) {
   }
 }
 
-export default function KeyboardEventHandler() {
+export default function listenKeyboardEvents() {
   addEventListener("keydown", keyDownHandler, false);
   addEventListener("keyup", keyUpHandler, false);
 }

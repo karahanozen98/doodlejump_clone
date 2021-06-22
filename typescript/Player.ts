@@ -1,62 +1,49 @@
-import Object from "./Object.js";
-import KeyboardEventHandler, {
-  leftPressed,
-  upPressed,
-  rightPressed,
-  downPressed,
-} from "./KeyboardEventHandler.js";
-import { WINDOW_WIDTH, WINDOW_HEIGHT, GRAVITY, game } from "./app.js";
+import GameObject from "./GameObject.js";
+import { typeOf_gameWindow } from "./gameWindow.js";
+import listenKeyboardEvents, { upPressed, leftPressed, rightPressed } from "./KeyboardEventHandler.js";
+import { WINDOW_WIDTH, WINDOW_HEIGHT, GRAVITY } from "./app.js";
 
-export default class Player extends Object {
-  private velX: number;
-  private velY: number;
+export default class Player extends GameObject {
   private speed: number;
+  private isOntheGround: boolean;
 
-  constructor(
-    width: number,
-    height: number,
-    posX: number,
-    posY: number,
-    color: string,
-    collisions: boolean,
-    gameWindow: any
-  ) {
-    super(width, height, posX, posY, color, collisions, gameWindow);
-    this.velX = 0;
-    this.velY = 0;
-    this.speed = 10;
-    KeyboardEventHandler();
+  constructor(width: number, height: number, posX: number, posY: number, color: string, gameWindow: typeOf_gameWindow) {
+    super(width, height, posX, posY, color, true, gameWindow);
+    this.speed = 5;
   }
 
-  public setVelX(value) {
-    this.velX = value;
-  }
+  public setIsOnTheGround = (value: boolean) => {
+    this.isOntheGround = value
+  };
 
-  public setVelY(value) {
-    this.velY = value;
-  }
-
-  public getVelX() {
-    return this.velX;
-  }
-
-  public getVelY() {
-    return this.velY;
-  }
-
-  public updatePosition() {
-    // add gravity effect
-    this.setPosY(this.getPosY() + GRAVITY);
+  private enableKeyControls() {
+    listenKeyboardEvents();
     // add keyboard movements
-    if (leftPressed) this.setPosX(this.getPosX() - this.speed);
-    if (rightPressed) this.setPosX(this.getPosX() + this.speed);
-    if (upPressed) this.setPosY(this.getPosY() - this.speed);
-    if (downPressed) this.setPosY(this.getPosY() + this.speed);
+    if (upPressed ) { // jump
+      this.setVelY(-GRAVITY * 20);
+      this.isOntheGround = false;
+    }
+    if (leftPressed) this.setPosX(this.getPosX() - this.speed); // go left
+    if (rightPressed) this.setPosX(this.getPosX() + this.speed); // go right
+  }
+
+  private enableGravity() {
+    if (!this.isOntheGround) this.setVelY(this.getVelY() + GRAVITY)
+  }
+
+  private updatePosition() {
+    this.enableKeyControls();
+    this.enableGravity();
+    this.setPosX(this.getPosX() + this.getVelX())
+    this.setPosY(this.getPosY() + this.getVelY())
 
     // add collisions
     if (this.getPosX() > WINDOW_WIDTH) this.setPosX(0 - this.getWidth());
     else if (this.getPosX() < -this.getWidth()) this.setPosX(WINDOW_WIDTH);
-    if (this.getPosY() == WINDOW_HEIGHT - this.getHeight()) game.init();
+    if (this.getPosY() >= WINDOW_HEIGHT - this.getHeight()) {
+      this.setPosY(WINDOW_HEIGHT - this.getHeight())
+      this.setIsOnTheGround(true);
+    }
   }
 
   public draw() {
