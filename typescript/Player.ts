@@ -5,7 +5,7 @@ import listenKeyboardEvents, {
   leftPressed,
   rightPressed,
 } from "./KeyboardEventHandler.js";
-import { GRAVITY } from "./app.js";
+import { WINDOW_WIDTH, WINDOW_HEIGHT, GRAVITY } from "./app.js";
 
 export default class Player extends GameObject {
   private speed: number;
@@ -28,11 +28,9 @@ export default class Player extends GameObject {
   private enableKeyControls() {
     listenKeyboardEvents();
     // add keyboard movements
-    if (upPressed) {
+    if (upPressed && this.isOntheGround) {
       // jump
-      console.log(this.isOntheGround);
-
-      this.setVelY(-GRAVITY * 20);
+      this.setVelY(-GRAVITY * 30);
       this.isOntheGround = false;
     }
     if (leftPressed) this.setPosX(this.getPosX() - this.speed); // go left
@@ -40,7 +38,8 @@ export default class Player extends GameObject {
   }
 
   private enableGravity() {
-    if (!this.isOntheGround) this.setVelY(Math.min(GRAVITY * 15,this.getVelY() + GRAVITY));
+    if (!this.isOntheGround)
+      this.setVelY(Math.min(GRAVITY * 15, this.getVelY() + GRAVITY));
   }
 
   private updatePosition() {
@@ -49,18 +48,17 @@ export default class Player extends GameObject {
     this.setPosX(this.getPosX() + this.getVelX());
     this.setPosY(this.getPosY() + this.getVelY());
 
-    // // add collisions
-    // if (this.getPosX() > WINDOW_WIDTH) this.setPosX(0 - this.getWidth());
-    // else if (this.getPosX() < -this.getWidth()) this.setPosX(WINDOW_WIDTH);
-    // if (this.getPosY() >= WINDOW_HEIGHT - this.getHeight()) {
-    //   this.setPosY(WINDOW_HEIGHT - this.getHeight());
-    //   this.setIsOnTheGround(true);
-    // }
+    // add collisions
+    if (this.getPosX() > WINDOW_WIDTH) this.setPosX(0 - this.getWidth());
+    else if (this.getPosX() < -this.getWidth()) this.setPosX(WINDOW_WIDTH);
+    if (this.getPosY() >= WINDOW_HEIGHT - this.getHeight()) {
+      this.setPosY(WINDOW_HEIGHT - this.getHeight());
+      this.setIsOnTheGround(true);
+    }
   }
 
   public draw() {
     this.updatePosition();
-    this.addCoordinates();
     const ctx = this.getCtx();
     ctx.fillStyle = this.getColor();
     ctx.fillRect(
